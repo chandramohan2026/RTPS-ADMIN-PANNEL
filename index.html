@@ -1,0 +1,709 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BIHAR RTPS — Professional Admin Panel</title>
+<style>
+:root{--bg:#f5f7fb;--card:#fff;--text:#172033;--muted:#6b7280;--line:#e6eaf0;--primary:#2563eb;--danger:#dc2626;--success:#16a34a;--warning:#d97706;--shadow:0 10px 30px rgba(15,23,42,.08)}
+*{box-sizing:border-box}body{font-family:Inter,Arial,sans-serif;background:var(--bg);margin:0;color:var(--text)}
+.wrap{max-width:1200px;margin:auto;padding:24px}.topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:20px}
+.brand h1{font-size:25px;margin:0}.brand p{margin:5px 0 0;color:var(--muted);font-size:13px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:20px;margin-bottom:18px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.stat{padding:18px;border:1px solid var(--line);border-radius:14px;background:#fff}.stat .label{font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase}.stat .num{font-size:28px;font-weight:800;margin-top:8px}
+.formgrid{display:grid;grid-template-columns:1.4fr 1fr auto;gap:12px;align-items:end}label{display:block;font-size:12px;font-weight:800;margin-bottom:7px;color:#374151}
+input,button{font:inherit}input{width:100%;padding:12px 13px;border:1px solid #d1d5db;border-radius:10px;background:#fff;outline:none}input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+button{border:0;border-radius:10px;padding:11px 14px;cursor:pointer;font-weight:800}.primary{background:var(--primary);color:#fff}.secondary{background:#eef2f7;color:#263244}.danger{background:#fee2e2;color:#991b1b}.success{background:#dcfce7;color:#166534}.warning{background:#fef3c7;color:#92400e}
+.toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}.filters{display:flex;gap:8px;flex-wrap:wrap}.filters button{padding:8px 12px;font-size:12px}.filters button.active{background:#111827;color:#fff}
+.search{max-width:320px}.table-wrap{overflow:auto}.lic-table{width:100%;border-collapse:separate;border-spacing:0;min-width:900px}.lic-table th{background:#f8fafc;color:#64748b;font-size:11px;text-transform:uppercase;letter-spacing:.04em;text-align:left;padding:12px;border-bottom:1px solid var(--line)}.lic-table td{padding:13px 12px;border-bottom:1px solid var(--line);font-size:13px;vertical-align:middle}.lic-table tr:last-child td{border-bottom:0}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:5px 9px;border-radius:999px;font-size:11px;font-weight:800}.active{background:#dcfce7;color:#166534}.expired{background:#fee2e2;color:#991b1b}.soon{background:#fef3c7;color:#92400e}
+.actions{display:flex;gap:6px;flex-wrap:wrap}.actions button{padding:7px 9px;font-size:11px}.code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;font-weight:800}.muted{color:var(--muted)}.notice{background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:12px;font-size:12px;color:#1e40af}
+.modal{display:none;position:fixed;inset:0;background:rgba(15,23,42,.5);align-items:center;justify-content:center;padding:20px;z-index:10}.modal.show{display:flex}.modalbox{width:min(430px,100%);background:#fff;border-radius:16px;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,.2)}.modalbox h3{margin-top:0}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
+@media(max-width:800px){.actions button{min-height:44px;padding:10px 12px;font-size:12px}.big-action{min-height:52px;font-size:14px}.stats{grid-template-columns:repeat(2,1fr)}.formgrid{grid-template-columns:1fr}.topbar{align-items:flex-start;flex-direction:column}.topbar button{min-height:46px;padding:12px 18px}.panel{padding:16px}.big-action{width:100%;min-height:50px;font-size:14px}.actions{gap:8px}.actions button{padding:10px 12px;font-size:12px;min-height:42px}}@media(max-width:480px){.wrap{padding:10px}.stats{grid-template-columns:1fr 1fr;gap:9px}.stat{padding:14px}.stat .num{font-size:23px}.brand h1{font-size:21px}.brand p{font-size:12px}.formgrid button{width:100%;min-height:50px;font-size:14px}.filters button{min-height:42px;padding:10px 13px;font-size:12px}.search{max-width:none}}
+@media(max-width:800px){.actions button{min-height:44px;padding:10px 12px;font-size:12px}.big-action{min-height:52px;font-size:14px}.topbar button{font-size:14px}.actions button{min-width:78px}}
+.login-email-hidden{display:none!important}
+
+/* ===== Professional mobile-admin visual refresh ===== */
+:root{
+  --bg:#eef6ff;
+  --card:#ffffff;
+  --text:#14213d;
+  --muted:#6b7b93;
+  --line:#dbe8f7;
+  --primary:#0879f9;
+  --primary2:#1455d9;
+  --danger:#e63946;
+  --success:#18b86a;
+  --warning:#f4a51c;
+  --shadow:0 10px 28px rgba(40,105,170,.12);
+}
+html{background:var(--bg)}
+body{
+  min-height:100vh;
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+  background:
+    radial-gradient(circle at 100% 0%,rgba(0,129,255,.10),transparent 28%),
+    linear-gradient(180deg,#edf6ff 0%,#f7fbff 52%,#eef7ff 100%);
+  color:var(--text);
+}
+.wrap{max-width:760px;margin:0 auto;padding:0 14px 26px}
+.topbar{
+  position:relative;
+  margin:0 -14px 18px;
+  padding:16px 16px 17px 60px;
+  min-height:88px;
+  color:#fff;
+  background:linear-gradient(135deg,#1256d8 0%,#078cf5 100%);
+  box-shadow:0 8px 24px rgba(12,83,194,.24);
+  overflow:hidden;
+  align-items:center;
+}
+.topbar:before{
+  content:"";
+  position:absolute;left:18px;top:28px;width:30px;height:22px;
+  border-top:3px solid #fff;border-bottom:3px solid #fff;border-radius:2px;
+  opacity:.96;
+}
+.topbar:after{
+  content:"";
+  position:absolute;left:18px;top:38px;width:30px;height:3px;
+  background:#fff;border-radius:2px;
+}
+.brand{position:relative;z-index:1}
+.brand .welcome-line{margin:0 0 4px;font-size:12.5px;font-weight:600;color:rgba(255,255,255,.92);letter-spacing:.01em}
+.brand .welcome-line b{color:#fff;font-weight:800}
+.brand h1{font-size:22px;line-height:1.15;margin:0 0 4px;font-weight:800;letter-spacing:-.3px}
+.brand h1::first-letter{font-size:22px}
+.brand p{margin:2px 0 0;color:rgba(255,255,255,.88);font-size:12px}
+.brand p b{color:#fff}
+.topbar>div:last-child{
+  position:relative;z-index:2;
+  justify-content:flex-end!important;
+}
+.topbar .muted{color:rgba(255,255,255,.9)!important}
+.topbar button{
+  border-radius:22px;
+  min-height:40px;
+  padding:9px 14px;
+  background:rgba(255,255,255,.16);
+  color:#fff;
+  border:1px solid rgba(255,255,255,.28);
+  box-shadow:none;
+  backdrop-filter:blur(8px);
+}
+.topbar #logoutBtn{background:#fff1f1;color:#c62836;border-color:transparent}
+.panel{
+  background:rgba(255,255,255,.97);
+  border:1px solid #e0ebf8;
+  border-radius:20px;
+  box-shadow:var(--shadow);
+  padding:18px;
+  margin-bottom:16px;
+}
+.stats{
+  display:grid;grid-template-columns:1fr 1fr;gap:12px;
+  margin-bottom:16px;
+}
+.stat{
+  position:relative;
+  min-height:112px;
+  padding:18px 16px 15px 68px;
+  border:1px solid #e1ebf6;
+  border-radius:18px;
+  background:#fff;
+  box-shadow:0 7px 20px rgba(53,108,166,.08);
+  overflow:hidden;
+}
+.stat:before{
+  content:"";
+  position:absolute;left:0;top:0;bottom:0;width:5px;
+  background:var(--primary);
+  border-radius:18px 0 0 18px;
+}
+.stat:nth-child(2):before{background:var(--success)}
+.stat:nth-child(3):before{background:#7548e8}
+.stat:nth-child(4):before{background:var(--warning)}
+.stat:after{
+  position:absolute;left:17px;top:26px;
+  width:38px;height:38px;border-radius:50%;
+  display:grid;place-items:center;font-size:19px;
+  background:#e7f3ff;color:#0879f9;
+}
+.stat:nth-child(1):after{content:"👥"}
+.stat:nth-child(2):after{content:"✓";background:#e1f8ed;color:#14a965;font-weight:900}
+.stat:nth-child(3):after{content:"◷";background:#eee8ff;color:#7548e8}
+.stat:nth-child(4):after{content:"⌛";background:#fff2d8;color:#e79b12}
+.stat .label{font-size:11px;color:#5d708c;font-weight:800;letter-spacing:.02em}
+.stat .num{font-size:28px;font-weight:850;margin-top:7px;color:#152b54}
+#appContent>.panel:first-of-type h3,
+#appContent>.panel:nth-of-type(1) h3{color:#fff}
+#appContent>.panel:first-of-type{
+  padding:0 0 16px;
+  overflow:hidden;
+}
+#appContent>.panel:first-of-type h3{
+  margin:0!important;
+  padding:17px 20px;
+  font-size:20px;
+  background:linear-gradient(135deg,#0753c9,#087ff5);
+  position:relative;
+}
+#appContent>.panel:first-of-type h3:after{
+  content:"";
+  position:absolute;right:-18px;top:-26px;width:115px;height:115px;
+  border-radius:50%;background:rgba(255,255,255,.09);
+}
+#appContent>.panel:first-of-type .formgrid{padding:17px 18px 0}
+.formgrid{gap:12px}
+label{font-size:12px;color:#29466d;margin-bottom:7px}
+input{
+  min-height:48px;
+  padding:12px 14px;
+  border:1px solid #d7e3f0;
+  border-radius:14px;
+  background:#fbfdff;
+  color:#18325b;
+  font-size:14px;
+}
+input:focus{border-color:#1684f7;box-shadow:0 0 0 4px rgba(22,132,247,.10)}
+button{
+  border-radius:13px;
+  padding:11px 15px;
+  font-weight:800;
+  transition:transform .12s ease,box-shadow .12s ease;
+}
+button:active{transform:scale(.98)}
+.primary{
+  background:linear-gradient(135deg,#075de2,#078ff8);
+  box-shadow:0 6px 14px rgba(9,103,229,.20);
+}
+.secondary{background:#edf4fc;color:#315176}
+.danger{background:#ffe6e8;color:#c92735}
+.success{background:#def8eb;color:#168b59}
+.warning{background:#fff1d2;color:#a66b00}
+#result.notice{
+  margin:14px 18px 0!important;
+  background:#eff8ff;border:1px solid #bcdfff;color:#1c5d9b;
+  border-radius:14px;
+}
+.toolbar{margin-bottom:14px}
+.toolbar h3{font-size:21px;color:#17345e}
+.search{max-width:340px}
+.filters{gap:8px}
+.filters button{
+  border-radius:22px;
+  background:#eef5fc;
+  color:#315176;
+  border:1px solid #e0ebf6;
+  min-height:40px;
+}
+.filters button.active{
+  background:linear-gradient(135deg,#0755c9,#087ff5);
+  color:#fff;
+  box-shadow:0 5px 12px rgba(7,96,216,.20);
+}
+.table-wrap{
+  border:1px solid #e2edf8;
+  border-radius:16px;
+  overflow:auto;
+}
+.lic-table{min-width:900px;background:#fff}
+.lic-table th{
+  background:#edf6ff;color:#4d6a91;border-bottom:1px solid #dbe8f5;
+  padding:13px;font-size:10px;
+}
+.lic-table td{padding:13px;border-bottom:1px solid #edf2f7;color:#243d63}
+.lic-table tr:hover td{background:#f8fbff}
+.badge{padding:6px 10px;font-size:10px}
+.active{background:#dff8ec;color:#16965d}
+.expired{background:#ffe4e7;color:#c52c39}
+.soon{background:#fff0d0;color:#ad7205}
+.actions button{border-radius:10px}
+.notice{
+  border-radius:16px;
+  background:#edf7ff;border-color:#bcdfff;color:#175fa1;
+  box-shadow:0 6px 16px rgba(50,119,181,.07);
+}
+.modal{background:rgba(8,34,70,.52);backdrop-filter:blur(4px)}
+.modalbox{border-radius:20px;border:1px solid #dfebf7}
+.empty{padding:28px!important;text-align:center;color:#7a8da7}
+
+/* Mobile presentation: table rows become clean license cards */
+@media(max-width:800px){
+  .wrap{padding:0 10px 24px}
+  .topbar{margin:0 -10px 16px;padding-left:58px}
+  .topbar>div:last-child{margin-left:auto}
+  .topbar #adminEmail{display:none}
+  .stats{gap:10px}
+  .stat{min-height:106px;padding-left:63px}
+  .stat:after{left:15px}
+  .panel{padding:15px;border-radius:18px}
+  #appContent>.panel:first-of-type h3{font-size:18px;padding:16px 18px}
+  #appContent>.panel:first-of-type .formgrid{padding:15px}
+  .formgrid{grid-template-columns:1fr}
+  .formgrid button{width:100%;min-height:50px}
+  .toolbar{align-items:stretch}
+  .toolbar>div{width:100%}
+  .search{max-width:none;width:100%;min-height:48px}
+  .filters{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .filters button{width:100%;min-height:44px}
+  .table-wrap{border:0;overflow:visible}
+  .lic-table{min-width:0;border-collapse:separate;border-spacing:0 10px}
+  .lic-table thead{display:none}
+  .lic-table tbody,.lic-table tr,.lic-table td{display:block;width:100%}
+  .lic-table tr{
+    position:relative;
+    padding:14px 14px 13px;
+    border:1px solid #dce9f5;
+    border-radius:18px;
+    background:#fff;
+    box-shadow:0 7px 18px rgba(47,104,159,.08);
+  }
+  .lic-table td{
+    border:0;
+    padding:4px 0;
+    font-size:12px;
+  }
+  .lic-table td:nth-child(1){
+    font-size:16px;font-weight:800;padding-bottom:6px;color:#17365f;
+  }
+  .lic-table td:nth-child(2){
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+    color:#3c5a7f;font-size:11px;word-break:break-all;
+  }
+  .lic-table td:nth-child(3)::before{content:"Activation: ";font-weight:800;color:#7287a2}
+  .lic-table td:nth-child(4)::before{content:"Expiry: ";font-weight:800;color:#7287a2}
+  .lic-table td:nth-child(5),.lic-table td:nth-child(6){display:inline-block;margin-right:6px}
+  .lic-table td:nth-child(7){padding-top:9px}
+  .actions{gap:6px}
+  .actions button{flex:1;min-width:0!important;min-height:40px;padding:8px 7px;font-size:10px}
+}
+@media(max-width:480px){
+  .brand h1{font-size:19px}
+  .brand p{font-size:11px}
+  .topbar{min-height:82px}
+  .stats{grid-template-columns:1fr 1fr}
+  .stat{padding:14px 10px 12px 55px;min-height:100px}
+  .stat:after{left:11px;top:24px;width:34px;height:34px;font-size:16px}
+  .stat .label{font-size:10px}
+  .stat .num{font-size:24px}
+  .actions{display:grid;grid-template-columns:repeat(3,1fr)}
+  .actions button{width:100%}
+}
+
+
+/* Screenshot-matched user cards and hamburger menu */
+.menu-btn{position:absolute;left:16px;top:22px;width:34px;height:34px;padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important;font-size:28px;line-height:1;color:#fff;z-index:5}
+.menu-drawer{display:none;background:#fff;border:1px solid #dce9f8;border-radius:18px;box-shadow:0 12px 30px rgba(30,80,150,.14);padding:10px;margin:0 0 16px}
+.menu-drawer.show{display:block}
+.menu-drawer button{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:#f6faff;color:#12376b;border:1px solid #e3eefb;margin:6px 0;padding:13px 14px;border-radius:12px;font-size:14px}
+.menu-drawer button:hover{background:#eaf3ff}
+.menu-drawer .menu-title{font-weight:800;color:#124fae;padding:8px 12px 4px}
+.user-card{display:none}
+@media(max-width:800px){
+ .topbar{padding-left:60px!important;flex-direction:row!important;align-items:center!important}
+ .topbar>div:last-child{margin-left:auto}
+ .topbar .brand p:not(.welcome-line){display:none}
+ .topbar .brand h1{font-size:20px}
+}
+
+/* ===== Clean, robust "All Users" cards (grid-based, screenshot-matched) ===== */
+@media(max-width:800px){
+  .panel:has(.lic-table){padding:16px 14px 14px;border-radius:22px}
+  .panel:has(.lic-table) .toolbar:first-child{gap:12px;margin-bottom:14px}
+  .panel:has(.lic-table) .toolbar:first-child h3{font-size:24px;letter-spacing:-.3px;color:#102b58;margin:0}
+  .panel:has(.lic-table) .toolbar:first-child>div>div{font-size:13px!important;color:#687d9c!important;margin-top:3px!important}
+  .panel:has(.lic-table) .toolbar:first-child>input,
+  .panel:has(.lic-table) .search{max-width:none;width:100%;min-height:52px;border:1px solid #d7e5f5;border-radius:16px;background:#fff;font-size:15px;padding-left:16px;box-shadow:0 3px 10px rgba(37,99,235,.05)}
+  .panel:has(.lic-table) .filters{grid-template-columns:1fr 1fr;gap:8px}
+  .panel:has(.lic-table) .filters button{border-radius:20px;min-height:48px;font-size:13px}
+
+  .table-wrap{overflow:visible;border:0}
+  .lic-table{min-width:0;width:100%;border-collapse:separate;border-spacing:0 10px}
+  .lic-table thead{display:none}
+  .lic-table tbody{display:block}
+  .lic-table tr{
+    position:relative;
+    display:grid;
+    grid-template-columns:36px 1fr auto;
+    grid-template-areas:
+      "avatar name side1"
+      "avatar name side2"
+      "avatar code code"
+      "avatar meta1 meta2"
+      "actions actions actions";
+    column-gap:9px;row-gap:4px;
+    width:100%;
+    background:linear-gradient(135deg,#fff 0%,#fafdff 100%);
+    border:1.5px solid #000;
+    border-radius:16px;
+    box-shadow:0 5px 14px rgba(47,104,159,.08);
+    padding:11px 12px 10px;
+  }
+  .lic-table tr::before{
+    content:"👤";
+    grid-area:avatar;
+    width:34px;height:34px;align-self:start;
+    display:flex;align-items:center;justify-content:center;
+    border-radius:50%;
+    background:linear-gradient(145deg,#dff1ff,#bcdcff);
+    font-size:15px;
+  }
+  .lic-table td{display:block;width:auto;padding:0!important;border:0!important;font-size:12px}
+  .lic-table td:nth-child(1){grid-area:name;align-self:center;font-size:15px;font-weight:800;color:#12376b;line-height:1.15;word-break:break-word}
+  .lic-table td:nth-child(2){grid-area:code;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13.5px;color:#0b1f3d;font-weight:900;letter-spacing:.02em;line-height:1.35;overflow-wrap:anywhere;word-break:break-word}
+  .lic-table td:nth-child(3),.lic-table td:nth-child(4){display:flex!important;align-items:center;gap:3px;font-size:11px;color:#284d7d;font-weight:700}
+  .lic-table td:nth-child(3){grid-area:meta1}
+  .lic-table td:nth-child(3):before{content:"📅";font-size:11px}
+  .lic-table td:nth-child(4){grid-area:meta2;justify-self:start;cursor:pointer;color:#0a57b8;border-bottom:1px dashed #8fbdf0;width:fit-content;padding-bottom:1px}
+  .lic-table td:nth-child(4):before{content:"⏳";font-size:11px}
+  .lic-table td:nth-child(4):after{content:"✎";font-size:9px;margin-left:2px;opacity:.75}
+  .lic-table td:nth-child(5){grid-area:side1;justify-self:end;align-self:start}
+  .lic-table td:nth-child(6){grid-area:side2;justify-self:end;align-self:start}
+  .lic-table td:nth-child(7){grid-area:actions;margin-top:3px!important;padding-top:8px!important;border-top:1px solid #edf2f8}
+  .lic-table .badge{font-size:9px;padding:3px 7px}
+  .actions{display:flex;flex-wrap:wrap;gap:5px}
+  .actions button{flex:1 1 calc(33.333% - 4px);min-width:0;min-height:32px;padding:6px 4px;font-size:10.5px;border-radius:9px}
+}
+@media(max-width:480px){
+  .panel:has(.lic-table) .toolbar:first-child h3{font-size:20px}
+  .lic-table tr{grid-template-columns:32px 1fr auto;padding:10px 10px 9px}
+  .lic-table tr::before{width:30px;height:30px;font-size:13px}
+  .lic-table td:nth-child(1){font-size:14px}
+  .lic-table td:nth-child(2){font-size:12px}
+  .actions button{font-size:10px;padding:6px 3px;min-height:30px}
+}
+.settings-panel{margin-top:10px;background:linear-gradient(135deg,#eef7ff,#f9fcff);border:1px solid #cfe3fa;border-radius:18px;padding:14px;display:none}
+.settings-panel.show{display:block}
+.settings-title{font-weight:800;color:#114eaa;margin-bottom:10px}
+.settings-row{display:flex;gap:8px;align-items:center}
+.settings-row input[type=text]{flex:1}
+.qr-preview{display:block;width:120px;height:120px;object-fit:contain;border-radius:14px;background:#fff;border:1px solid #dbe8f5;margin:10px 0}
+@media(max-width:480px){.settings-row{flex-direction:column;align-items:stretch}.settings-row button{width:100%}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <button class="menu-btn" aria-label="Open menu" onclick="toggleMenu()">☰</button>
+    <div class="brand">
+      <p class="welcome-line">Welcome, <b>CHANDRAMOHAN SINGH</b></p>
+      <h1>🔐 License Management</h1>
+      <p style="margin-top:3px">BIHAR RTPS • Professional Admin Panel</p>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span id="adminEmail" class="muted" style="font-size:12px"></span><button class="secondary" onclick="refreshData()">↻ Refresh</button><button id="logoutBtn" class="danger" style="display:none" onclick="logoutAdmin()">Logout</button></div>
+  </div>
+  <div id="menuDrawer" class="menu-drawer" aria-label="Contact settings">
+    <div class="menu-title">Contact / Social Settings</div>
+    <button onclick="whatsappNoChange()">📱 WhatsApp No Change</button>
+    <button onclick="changeInstagram()">📸 Instagram ID Change</button>
+    <button onclick="changeYouTube()">▶️ YouTube id change</button>
+    <button onclick="changeQrCode()">▣ Qr code Change</button>
+  </div>
+  <div id="settingsPanel" class="settings-panel">
+    <div class="settings-title" id="settingsTitle">Contact / QR Settings</div>
+    <div id="settingsContent"></div>
+  </div>
+
+  <div class="panel" id="loginPanel">
+    <h3 style="margin:0 0 14px">🔐 Admin Login</h3><div class="muted" style="font-size:12px;margin-bottom:10px">Email ID: <b>kchandramohan6205@gmail.com</b></div>
+    <div class="formgrid" style="grid-template-columns:1fr auto">
+      <div style="display:none"><label>Email</label><input id="loginEmail" type="email" value="kchandramohan6205@gmail.com" readonly autocomplete="username"></div>
+      <div><label>Password</label><input id="loginPassword" type="password" placeholder="Password" autocomplete="current-password"></div>
+      <button class="primary" onclick="loginAdmin()">Login</button>
+    </div>
+    <div id="loginMsg" class="notice" style="display:none;margin-top:12px"></div>
+  </div>
+
+  <div id="appContent" style="display:none">
+  <div class="stats">
+    <div class="stat"><div class="label">Total Users</div><div class="num" id="statTotal">0</div></div>
+    <div class="stat"><div class="label">Active</div><div class="num" id="statActive">0</div></div>
+    <div class="stat"><div class="label">Expired</div><div class="num" id="statExpired">0</div></div>
+    <div class="stat"><div class="label">Expiring Soon</div><div class="num" id="statSoon">0</div></div>
+  </div>
+
+  <div class="panel">
+    <h3 style="margin:0 0 14px">Create / Update License</h3>
+    <div class="formgrid">
+      <div><label>User ID</label><input id="uid" placeholder="जैसे: RTPS-5Y4ZVA" autocomplete="off"></div>
+      <div><label>Expiry Date</label><input id="expiryDate" type="date"></div>
+      <button class="primary" onclick="generate()">Generate / Update</button>
+    </div>
+    <div id="result" style="display:none;margin-top:14px" class="notice">
+      <b>Activation Code:</b> <span id="code" class="code"></span>
+      <span style="margin-left:12px" id="expiryText"></span>
+      <button class="success" style="float:right;padding:6px 10px" onclick="copyCode()">Copy</button>
+      <div style="clear:both"></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="toolbar">
+      <div>
+        <h3 style="margin:0">All Users</h3>
+        <div class="muted" style="font-size:12px;margin-top:4px">Active और Expired दोनों licenses यहाँ दिखाई देंगे।</div>
+      </div>
+      <input class="search" id="search" placeholder="🔎 User ID / Activation Code खोजें..." oninput="render()">
+    </div>
+    <div class="toolbar" style="margin-bottom:12px">
+      <div class="filters">
+        <button id="fAll" class="active" onclick="setFilter('all')">All</button>
+        <button id="fActive" onclick="setFilter('active')">Active</button>
+        <button id="fSoon" onclick="setFilter('soon')">Expiring Soon</button>
+        <button id="fExpired" onclick="setFilter('expired')">Expired</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table class="lic-table">
+        <thead><tr>
+          <th>User ID</th><th>Activation Code</th><th>Activation Date</th><th>Expiry Date</th>
+          <th>Status</th><th>Device</th><th>Actions</th>
+        </tr></thead>
+        <tbody id="licenseBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  </div>
+  <div class="notice">🔥 Firebase Firestore connected • Collection: <b>licenses</b><br>ℹ️ Expiry बढ़ाने पर bound device active रहेगा। Table का <b>Reset</b> दबाने पर उसी User ID की device binding हटेगी।</div>
+</div>
+
+<div class="modal" id="confirmModal">
+  <div class="modalbox">
+    <h3 id="modalTitle">Confirm Action</h3>
+    <div id="modalText" class="muted"></div>
+    <div class="modal-actions">
+      <button class="secondary" onclick="closeModal()">Cancel</button>
+      <button id="modalOk" class="danger">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="expiryModal">
+  <div class="modalbox">
+    <h3>📅 Update Expiry Date</h3>
+    <div class="muted" style="font-size:12px;margin-bottom:12px">User ID: <b id="expiryModalUser"></b></div>
+    <label>New Expiry Date</label>
+    <input type="date" id="expiryModalInput">
+    <div class="modal-actions">
+      <button class="secondary" onclick="closeExpiryModal()">Cancel</button>
+      <button class="primary" id="expiryModalSave" onclick="confirmExpiryModal()">Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API_KEY='AIzaSyCz-bfoFGPV1CVYJbCMfI3i8gm8Dy-ARJs';
+const PROJECT_ID='rtps-license-manager';
+const ADMIN_EMAIL='kchandramohan6205@gmail.com';
+const AUTH_URL='https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key='+API_KEY;
+const FS_URL='https://firestore.googleapis.com/v1/projects/'+PROJECT_ID+'/databases/(default)/documents/licenses';
+const SETTINGS_URL='https://firestore.googleapis.com/v1/projects/'+PROJECT_ID+'/databases/(default)/documents/siteSettings';
+let idToken='', allLicenses={}, currentFilter='all';
+const $=id=>document.getElementById(id);
+function msg(t,type='info'){const e=$('loginMsg');e.textContent=t;e.style.display='block';e.style.background=type==='error'?'#fee2e2':'#eff6ff';e.style.borderColor=type==='error'?'#fecaca':'#bfdbfe';e.style.color=type==='error'?'#991b1b':'#1e40af';}
+function setLogin(v,email=''){ $('loginPanel').style.display=v?'none':'block'; $('appContent').style.display=v?'block':'none'; $('logoutBtn').style.display=v?'inline-block':'none'; $('adminEmail').textContent=v?email:''; }
+async function loginAdmin(){
+ const email=$('loginEmail').value.trim(), password=$('loginPassword').value;
+ if(!email||!password){msg('Email और Password दोनों डालें।','error');return;}
+ const b=document.querySelector('#loginPanel button.primary');b.disabled=true;b.textContent='Logging in…';
+ try{
+  const r=await fetch(AUTH_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password,returnSecureToken:true})});
+  const d=await r.json();
+  if(!r.ok) throw new Error(d?.error?.message||'LOGIN_FAILED');
+  if((d.email||'').toLowerCase()!==ADMIN_EMAIL.toLowerCase()) throw new Error('NOT_ADMIN');
+  idToken=d.idToken; setLogin(true,d.email); msg('Login सफल.','info');
+  await loadFromFirebase(); render();
+ }catch(e){
+  console.error(e);idToken='';setLogin(false);
+  const s=String(e.message||e);
+  let m='गलत Email या Password.';
+  if(s==='NOT_ADMIN')m='यह Admin email नहीं है.';
+  else if(s.includes('INVALID_PASSWORD')||s.includes('INVALID_LOGIN_CREDENTIALS'))m='गलत Password.';
+  else if(s.includes('EMAIL_NOT_FOUND'))m='यह email Firebase Authentication में नहीं मिला.';
+  else if(s.includes('INVALID_EMAIL'))m='Email सही format में डालें.';
+  else if(s.includes('NETWORK'))m='Internet connection check करें.';
+  else if(s.includes('PERMISSION_DENIED'))m='Login हुआ, लेकिन Firestore Rules ने access रोक दिया.';
+  msg(m,'error');
+ }finally{b.disabled=false;b.textContent='Login';}
+}
+window.loginAdmin=loginAdmin;
+window.logoutAdmin=()=>{idToken='';allLicenses={};setLogin(false);msg('Logout हो गया.');};
+$('loginPassword').addEventListener('keydown',e=>{if(e.key==='Enter')loginAdmin();});
+async function fs(url,options={}){const h=Object.assign({'Content-Type':'application/json','Authorization':'Bearer '+idToken},options.headers||{});const r=await fetch(url,Object.assign({},options,{headers:h}));const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d?.error?.status||d?.error?.message||('HTTP_'+r.status));return d;}
+function friendlyFirebaseError(e){const s=String(e?.message||e||'');if(s.includes('PERMISSION_DENIED'))return 'PERMISSION_DENIED — Firebase Firestore Rules में Admin email को write access दें और फिर दोबारा Login करें।';if(s.includes('ADMIN_NOT_LOGGED_IN'))return 'Admin Login फिर से करें।';return s;}
+function parse(v){if(v.timestampValue)return Date.parse(v.timestampValue);if(v.integerValue!==undefined)return Number(v.integerValue);if(v.doubleValue!==undefined)return Number(v.doubleValue);if(v.booleanValue!==undefined)return !!v.booleanValue;if(v.stringValue!==undefined)return v.stringValue;if(v.nullValue!==undefined)return null;return null;}
+function parseDoc(d){const x={};for(const [k,v] of Object.entries(d.fields||{}))x[k]=parse(v);return x;}
+function field(v){if(typeof v==='boolean')return {booleanValue:v};if(typeof v==='number')return {integerValue:String(Math.trunc(v))};if(v===null)return {nullValue:null};return {stringValue:String(v)};}
+function fields(x){const f={};for(const [k,v] of Object.entries(x))if(v!==undefined)f[k]=field(v);return f;}
+async function loadFromFirebase(){const d=await fs(FS_URL+'?pageSize=300');const a={};(d.documents||[]).forEach(doc=>{const x=parseDoc(doc);a[x.userId||doc.name.split('/').pop()]=x;});allLicenses=a;}
+async function saveLicense(x){
+ if(!idToken)throw new Error('ADMIN_NOT_LOGGED_IN');
+ const body=JSON.stringify({fields:fields(x)});
+ try{
+   await fs(FS_URL+'/'+encodeURIComponent(x.userId),{method:'PATCH',body});
+ }catch(e){
+   if(String(e.message||e).includes('NOT_FOUND')){
+     await fs(FS_URL+'?documentId='+encodeURIComponent(x.userId),{method:'POST',body});
+   }else throw e;
+ }
+ allLicenses[x.userId]=x;
+}
+function fnv(str){let h=2166136261;for(let i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,16777619)}return(h>>>0).toString(36).toUpperCase();}
+function expectedCode(uid,exp){return 'RTPS-'+fnv(uid+'|'+exp+'|BIHAR-RTPS-AUTO-FILL-DATA-2026')+'-'+new Date(exp).toISOString().slice(0,10).replace(/-/g,'');}
+function freshResetCode(uid,exp){const r=Math.random().toString(36).slice(2,8).toUpperCase();return 'RTPS-'+r+'-'+new Date(exp).toISOString().slice(0,10).replace(/-/g,'');}
+function dateExpiry(ds){const p=ds.split('-').map(Number);return new Date(p[0],p[1]-1,p[2],23,59,59,0).getTime();}
+function fmt(ts){return new Date(Number(ts)).toLocaleDateString('en-IN');}
+function statusOf(x){return x.revoked?'expired':(Date.now()<Number(x.expiry)?'active':'expired');}
+function daysLeft(x){return Math.ceil((Number(x.expiry)-Date.now())/86400000);}
+function isSoon(x){return statusOf(x)==='active'&&daysLeft(x)<=7;}
+function showResult(uid,code,exp){$('code').textContent=code;$('expiryText').textContent='User ID: '+uid+' • Expiry: '+fmt(exp);$('result').style.display='block';}
+window.generate=async()=>{const uid=$('uid').value.trim().toUpperCase(),ds=$('expiryDate').value;if(!/^[A-Z0-9][A-Z0-9_-]{2,31}$/.test(uid)){alert('User ID सही format में डालें');return}if(!ds){alert('Expiry Date चुनें');return}const exp=dateExpiry(ds);if(exp<=Date.now()){alert('आज/भविष्य की date दें');return}const old=allLicenses[uid],x={userId:uid,expiry:exp,code:expectedCode(uid,exp),revoked:false,activationDate:old?.activationDate||Date.now(),deviceId:old?.deviceId||null,forceReset:false,updatedAt:Date.now()};try{await saveLicense(x);showResult(uid,x.code,exp);render()}catch(e){console.error(e);alert('Firebase save नहीं हुआ: '+friendlyFirebaseError(e))}};
+let expiryModalUid=null;
+function openExpiryModal(uid){
+  const x=allLicenses[uid];if(!x)return;
+  expiryModalUid=uid;
+  $('expiryModalUser').textContent=uid;
+  $('expiryModalInput').value=new Date(Number(x.expiry)).toISOString().slice(0,10);
+  $('expiryModal').classList.add('show');
+}
+window.openExpiryModal=openExpiryModal;
+function closeExpiryModal(){$('expiryModal').classList.remove('show');expiryModalUid=null;}
+window.closeExpiryModal=closeExpiryModal;
+async function confirmExpiryModal(){
+  const uid=expiryModalUid;if(!uid)return;
+  const ds=$('expiryModalInput').value;
+  if(!ds){alert('Expiry Date चुनें');return}
+  const exp=dateExpiry(ds);
+  if(exp<=Date.now()){alert('आज/भविष्य की date दें');return}
+  const x=allLicenses[uid];
+  x.expiry=exp;x.code=expectedCode(uid,exp);x.revoked=false;x.forceReset=false;x.updatedAt=Date.now();
+  const btn=$('expiryModalSave');const old=btn.textContent;btn.disabled=true;btn.textContent='Saving…';
+  try{await saveLicense(x);closeExpiryModal();render();}
+  catch(e){alert('Firebase update नहीं हुआ: '+friendlyFirebaseError(e));}
+  finally{btn.disabled=false;btn.textContent=old;}
+}
+window.confirmExpiryModal=confirmExpiryModal;
+window.extend=uid=>openExpiryModal(uid);
+window.expire=uid=>{const x=allLicenses[uid];if(!x)return;if(confirm(uid+' को expired करना है?')){x.revoked=true;x.forceReset=false;x.updatedAt=Date.now();saveLicense(x).then(render).catch(e=>alert('Firebase update नहीं हुआ: '+friendlyFirebaseError(e)));}};
+window.resetUser=uid=>{const x=allLicenses[uid];if(!x)return;if(confirm(uid+' की Device binding reset करनी है?')){x.deviceId=null;x.revoked=false;x.forceReset=true;x.code=freshResetCode(uid,Number(x.expiry));x.updatedAt=Date.now();saveLicense(x).then(render).catch(e=>alert('Firebase reset नहीं हुआ: '+friendlyFirebaseError(e)));}};
+window.releaseDevice=uid=>{const x=allLicenses[uid];if(!x)return;if(confirm(uid+' की Device binding हटानी है?')){x.deviceId=null;x.forceReset=false;x.updatedAt=Date.now();saveLicense(x).then(render).catch(e=>alert('Firebase update नहीं हुआ: '+friendlyFirebaseError(e)));}};
+window.deleteUser=async uid=>{if(!allLicenses[uid])return;try{await fs(FS_URL+'/'+encodeURIComponent(uid),{method:'DELETE'});delete allLicenses[uid];render();alert(uid+' delete हो गया और Users list से हट गया।')}catch(e){console.error(e);alert('Firebase से delete नहीं हुआ: '+friendlyFirebaseError(e))}};
+window.renew=window.extend;
+function copyTextToClipboard(text){
+  if(navigator.clipboard && window.isSecureContext){
+    navigator.clipboard.writeText(text).then(()=>toast('✅ Copied!')).catch(()=>fallbackCopy(text));
+  }else{
+    fallbackCopy(text);
+  }
+}
+function fallbackCopy(text){
+  const ta=document.createElement('textarea');
+  ta.value=text;ta.style.position='fixed';ta.style.left='-9999px';ta.style.top='0';
+  document.body.appendChild(ta);ta.focus();ta.select();
+  try{document.execCommand('copy');toast('✅ Copied!');}catch(e){toast('Copy नहीं हुआ');}
+  document.body.removeChild(ta);
+}
+function toast(msg){
+  let t=document.getElementById('copyToast');
+  if(!t){
+    t=document.createElement('div');t.id='copyToast';
+    t.style.cssText='position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(10px);background:#12376b;color:#fff;padding:11px 20px;border-radius:999px;font-size:13px;font-weight:800;box-shadow:0 10px 26px rgba(0,0,0,.28);z-index:9999;opacity:0;transition:opacity .22s ease,transform .22s ease;pointer-events:none';
+    document.body.appendChild(t);
+  }
+  t.textContent=msg;
+  requestAnimationFrame(()=>{t.style.opacity='1';t.style.transform='translateX(-50%) translateY(0)';});
+  clearTimeout(t._timer);
+  t._timer=setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(-50%) translateY(10px)';},1700);
+}
+window.copy=uid=>{
+  const x=allLicenses[uid];if(!x)return;
+  const text='User ID :- '+x.userId+'\nActivation code:- '+(x.code||'—')+'\nExpiry date:- '+fmt(x.expiry);
+  copyTextToClipboard(text);
+};
+window.copyCode=()=>window.copy($('uid').value.trim().toUpperCase());
+window.setFilter=f=>{currentFilter=f;document.querySelectorAll('.filters button').forEach(b=>b.classList.remove('active'));$('f'+f[0].toUpperCase()+f.slice(1))?.classList.add('active');render();};
+function render(){const body=$('licenseBody'),q=($('search').value||'').trim().toUpperCase(),keys=Object.keys(allLicenses).sort();let a=0,e=0,s=0;keys.forEach(k=>{const st=statusOf(allLicenses[k]);st==='active'?a++:e++;if(isSoon(allLicenses[k]))s++;});$('statTotal').textContent=keys.length;$('statActive').textContent=a;$('statExpired').textContent=e;$('statSoon').textContent=s;const list=keys.filter(uid=>{const x=allLicenses[uid],st=statusOf(x);return (!q||uid.includes(q)||(x.code||'').toUpperCase().includes(q))&&(currentFilter==='all'||currentFilter===st||(currentFilter==='soon'&&isSoon(x)));});body.innerHTML=list.length?list.map(uid=>{const x=allLicenses[uid],st=statusOf(x),soon=isSoon(x);return `<tr class="user-card-enhance"><td data-label="User ID">${uid}</td><td data-label="Activation Code" class="code">${x.code||'—'}</td><td data-label="Activation Date">${fmt(x.activationDate||x.updatedAt)}</td><td data-label="Expiry Date" onclick="openExpiryModal('${uid}')">${fmt(x.expiry)}</td><td data-label="Status">${st==='expired'?'<span class="badge expired">● EXPIRED</span>':soon?'<span class="badge soon">● EXPIRING SOON</span>':'<span class="badge active">● ACTIVE</span>'}</td><td data-label="Device">${x.deviceId?'<span class="badge active">BOUND</span>':'<span class="muted">Not Bound</span>'}</td><td data-label="Actions"><div class="actions"><button class="primary" onclick="extend('${uid}\')">Expiry</button><button class="danger" onclick="expire('${uid}\')">Expire</button><button class="warning" onclick="resetUser('${uid}\')">Reset</button><button class="success" onclick="releaseDevice('${uid}\')">Release</button><button class="danger" onclick="deleteUser('${uid}\')">Delete</button><button class="secondary" onclick="copy('${uid}\')">Copy</button></div></td></tr>`}).join(''):'<tr><td colspan="7" class="empty">कोई User ID नहीं मिली।</td></tr>';}
+window.refreshData=async()=>{try{await loadFromFirebase();render();alert('Firebase data refreshed')}catch(e){alert('Firebase refresh नहीं हुआ: '+friendlyFirebaseError(e))}};
+$('search').addEventListener('input',render);setLogin(false);const d=new Date();d.setDate(d.getDate()+30);$('expiryDate').value=d.toISOString().slice(0,10);
+
+
+function toggleMenu(){const m=$('menuDrawer');m.classList.toggle('show');}
+function closeSettings(){const p=$('settingsPanel');p.classList.remove('show');$('settingsContent').innerHTML='';}
+async function saveSetting(name,value){if(!idToken)throw new Error('ADMIN_NOT_LOGGED_IN');const body=JSON.stringify({fields:{value:{stringValue:String(value)},updatedAt:{integerValue:String(Date.now())}}});await fs(SETTINGS_URL+'/'+encodeURIComponent(name),{method:'PATCH',body});}
+async function getSetting(name){if(!idToken)return '';try{const d=await fs(SETTINGS_URL+'/'+encodeURIComponent(name));return parseDoc(d).value||'';}catch(e){return '';}}
+async function whatsappNoChange(){
+  $('settingsTitle').textContent='📱 WhatsApp Number';
+  const p=$('settingsPanel'),c=$('settingsContent');p.classList.add('show');
+  c.innerHTML='<div class="muted" style="font-size:12px;margin-bottom:8px">WhatsApp number यहाँ बदल सकते हैं।</div><div class="settings-row"><input id="waInput" type="text" placeholder="जैसे: 919876543210"><button class="primary" onclick="saveWhatsApp()">Save</button></div>';
+  const v=await getSetting('whatsapp');if($('waInput'))$('waInput').value=v;
+}
+async function saveWhatsApp(){const v=$('waInput').value.trim();if(!/^[0-9+() -]{8,20}$/.test(v)){alert('सही WhatsApp number डालें');return}try{await saveSetting('whatsapp',v);alert('WhatsApp number updated');}catch(e){alert('WhatsApp number save नहीं हुआ: '+friendlyFirebaseError(e));}}
+async function changeInstagram(){
+  const old=await getSetting('instagram');
+  const v=prompt('Instagram ID / Link डालें',old);
+  if(v!==null){
+    const raw=v.trim();
+    if(!raw){alert('Instagram ID खाली नहीं हो सकती');return}
+    let value=raw;
+    if(/^@?[A-Za-z0-9._]+$/.test(raw)){
+      value='https://www.instagram.com/'+raw.replace(/^@/,'')+'/';
+    }else if(!/^https?:\/\//i.test(raw)){
+      value='https://www.instagram.com/'+raw.replace(/^@/,'')+'/';
+    }
+    try{
+      await saveSetting('instagram',value);
+      alert('Instagram ID updated. Extension अगली बार खुलते ही नया link ले लेगा.');
+    }catch(e){
+      alert('Instagram ID save नहीं हुआ: '+friendlyFirebaseError(e));
+    }
+  }
+}
+async function changeYouTube(){
+  const old=await getSetting('youtube'),v=prompt('YouTube ID/Link डालें',old);if(v!==null){try{await saveSetting('youtube',v.trim());alert('YouTube ID updated')}catch(e){alert('YouTube ID save नहीं हुआ: '+friendlyFirebaseError(e))}}
+}
+async function changeQrCode(){
+  $('settingsTitle').textContent='▣ QR Code Image';
+  const p=$('settingsPanel'),c=$('settingsContent');p.classList.add('show');
+  c.innerHTML='<div class="muted" style="font-size:12px;margin-bottom:8px">QR code की image upload करें। Image compress होकर Firebase में save होगी।</div><input id="qrFile" type="file" accept="image/*"><img id="qrPreview" class="qr-preview" style="display:none"><div><button class="primary" onclick="uploadQrCode()">Upload / Save QR Code</button><button class="secondary" style="margin-left:8px" onclick="closeSettings()">Close</button></div>';
+  $('qrFile').addEventListener('change',e=>{const f=e.target.files?.[0];if(!f)return;const r=new FileReader();r.onload=()=>{const im=$('qrPreview');im.src=r.result;im.style.display='block'};r.readAsDataURL(f);});
+  const old=await getSetting('qrCode');if(old){$('qrPreview').src=old;$('qrPreview').style.display='block';}
+}
+function resizeImage(file,maxSide=500,maxBytes=700000){return new Promise((resolve,reject)=>{const r=new FileReader();r.onerror=reject;r.onload=()=>{const im=new Image();im.onload=()=>{
+  // QR के आसपास का खाली हिस्सा auto-detect करके काटें.
+  const src=document.createElement('canvas');src.width=im.width;src.height=im.height;const sx=src.getContext('2d');sx.drawImage(im,0,0);
+  const px=sx.getImageData(0,0,im.width,im.height).data;
+  let minX=im.width,minY=im.height,maxX=-1,maxY=-1;
+  for(let y=0;y<im.height;y+=2){for(let x=0;x<im.width;x+=2){const i=(y*im.width+x)*4;const a=px[i+3];const lum=(px[i]*299+px[i+1]*587+px[i+2]*114)/1000;if(a>20 && lum<245){if(x<minX)minX=x;if(y<minY)minY=y;if(x>maxX)maxX=x;if(y>maxY)maxY=y;}}}
+  if(maxX<0){minX=0;minY=0;maxX=im.width-1;maxY=im.height-1;}
+  const bw=maxX-minX+1,bh=maxY-minY+1;
+  // Square crop + quiet-zone margin, ताकि QR पूरा रहे और display समान आकार में रहे.
+  const side=Math.max(bw,bh);
+  const pad=Math.max(8,Math.round(side*0.08));
+  const box=Math.min(Math.max(side+pad*2,1),Math.max(im.width,im.height));
+  const cx=(minX+maxX)/2,cy=(minY+maxY)/2;
+  const cropX=Math.max(0,Math.min(im.width-box,cx-box/2));
+  const cropY=Math.max(0,Math.min(im.height-box,cy-box/2));
+  const out=document.createElement('canvas');out.width=maxSide;out.height=maxSide;
+  out.getContext('2d').fillStyle='#fff';out.getContext('2d').fillRect(0,0,maxSide,maxSide);
+  out.getContext('2d').drawImage(im,cropX,cropY,box,box,0,0,maxSide,maxSide);
+  let data=out.toDataURL('image/png');
+  // PNG QR के लिए बेहतर है; जरूरत पड़े तो JPEG fallback.
+  if(data.length>maxBytes){let q=.95;do{data=out.toDataURL('image/jpeg',q);q-=.08;}while(data.length>maxBytes&&q>.35);}
+  resolve(data);
+};im.onerror=reject;im.src=r.result};r.readAsDataURL(file);});}
+async function uploadQrCode(){const f=$('qrFile')?.files?.[0];if(!f){alert('पहले QR code image चुनें');return}if(!f.type.startsWith('image/')){alert('सिर्फ image file चुनें');return}try{const data=await resizeImage(f);if(data.length>950000)throw new Error('QR_IMAGE_TOO_LARGE');await saveSetting('qrCode',data);if($('qrPreview'))$('qrPreview').src=data;alert('QR code image updated. Auto crop + same-size square में save हो गया।');}catch(e){alert('QR code save नहीं हुआ: '+(e.message==='QR_IMAGE_TOO_LARGE'?'Image बहुत बड़ी है, छोटी image चुनें।':friendlyFirebaseError(e)));}}
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('./sw.js').catch(function (err) {
+      console.warn('Service worker registration failed:', err);
+    });
+  });
+}
+</script>
+
+</body></html>
